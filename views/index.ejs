@@ -28,33 +28,26 @@
       </div>
       <div class="books">
         <h2>My Book Notes</h2>
+        <% books.forEach(book => { %>
         <div class="book">
           <img
             class="book-img"
-            src="images/youcannegotiateanything.jpg"
+            src="<%=book.cover_url%>"
             loading="lazy"
-            alt="You Can Negotiate Anything - by Herb Cohen"
+            alt="<%=book.title%> - by <%=book.author%>"
           />
           <h3>
-            <a href="/book/1">You Can Negotiate Anything - by Herb Cohen</a>
+            <a href="/book/1"><%=book.title%> - by <%=book.author%></a>
           </h3>
           <small
-            >Date read: 2023-08-02. How strongly I recommend it:
-            <strong>10</strong>/10</small
+            >Date read: <%=new Date(book.date_read).toLocaleDateString('en-GB',
+            { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric'
+            }).replace(',', '');%>. How strongly I recommend it:
+            <strong><%=book.rating%></strong>/10</small
           >
-          <p>
-            Everything is negotiable. Challenge authority. You have the power in
-            any situation. This is how to realize it and use it. A must-read
-            classic from 1980 from a master negotiator. My notes here aren’t
-            enough because the little book is filled with so many memorable
-            stories — examples of great day-to-day moments of negotiation that
-            will stick in your head for when you need them. (I especially loved
-            the one about the power of the prisoner in solitary confinement.) So
-            go buy and read the book. I’m giving it a 10/10 rating even though
-            the second half of the book loses steam, because the first half is
-            so crucial.
-          </p>
+          <p><%=book.description%></p>
         </div>
+        <% }) %>
       </div>
     </div>
     <script
