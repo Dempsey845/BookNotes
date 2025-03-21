@@ -16,17 +16,20 @@
     <%- include('partials/header.ejs'); -%>
     <div class="container">
       <h1>Add Book Notes</h1>
-      <form class="row g-3">
+      <form
+        class="row g-3"
+        action="/add"
+        method="POST"
+        enctype="multipart/form-data"
+      >
         <div class="col-md-6">
           <label for="title">Title: </label>
           <input type="text" id="title" name="title" class="form-control" />
         </div>
-
         <div class="col-md-6">
           <label for="author">Author: </label>
           <input type="text" id="author" name="author" class="form-control" />
         </div>
-
         <div class="col-md-12">
           <label for="description">Short Description: </label>
           <textarea
@@ -37,9 +40,8 @@
             maxlength="700"
           ></textarea>
         </div>
-
         <div class="col-md-4">
-          <label for="date_read">Date Read: </label>
+          <label for="date_read">Date Read (YYYY-MM-DD): </label>
           <input
             type="text"
             id="date_read"
@@ -47,7 +49,6 @@
             class="form-control"
           />
         </div>
-
         <div class="col-md-1">
           <label for="rating">Rating (/10): </label>
           <input
@@ -59,7 +60,6 @@
             max="10"
           />
         </div>
-
         <div class="col-md-1">
           <label for="isbn">ISBN: </label>
           <input
@@ -72,7 +72,10 @@
             required
           />
         </div>
-
+        <div class="col-md-6">
+          <label for="image">Upload Image:</label>
+          <input type="file" id="image" name="image" class="form-control" />
+        </div>
         <div class="col-md-12">
           <label for="notes">Notes: </label>
           <textarea
@@ -82,7 +85,6 @@
             rows="12"
           ></textarea>
         </div>
-
         <div class="col-md-12">
           <button type="submit" class="btn btn-primary w-100">Submit</button>
         </div>

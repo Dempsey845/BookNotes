@@ -37,7 +37,9 @@
             alt="<%=book.title%> - by <%=book.author%>"
           />
           <h3>
-            <a href="/book/1"><%=book.title%> - by <%=book.author%></a>
+            <a href="/book/<%=book.id%>"
+              ><%=book.title%> - by <%=book.author%></a
+            >
           </h3>
           <small
             >Date read: <%=new Date(book.date_read).toLocaleDateString('en-GB',

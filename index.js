@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
 import pg from "pg";
+import multer from "multer";
 
 const port = 3000;
 const app = express();
@@ -9,7 +10,19 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-// PostgreSQL
+// Multer file handling
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/images"); // Folder to save the uploaded images;
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); // Timestamp to avoid name conflicts
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// PostgreSQL connection
 const db = new pg.Client({
   user: "postgres",
   host: "localhost",
@@ -38,20 +51,20 @@ async function getBookWithID(id) {
   }
 }
 
-// API
+// API for fetching book cover
 async function getBookCover(isbn) {
   try {
     const response = await axios.get(
       `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`
     );
-    return response.config.url; // This will return the image URL
+    return response.config.url;
   } catch (error) {
     console.error("Error fetching the cover image:", error);
-    return null; // Return null or a default image URL if the request fails
+    return null;
   }
 }
 
-// Express
+// Express routes
 app.get("/", async (req, res) => {
   const books = await getAllBooks();
   res.render("index.ejs", { books: books });
@@ -66,6 +79,39 @@ app.get("/book/:id", async (req, res) => {
   const book = await getBookWithID(bookId);
   console.log(book);
   res.render("book.ejs", { book: book[0] });
+});
+
+// Post request to handle form submission
+app.post("/add", upload.single("image"), async (req, res) => {
+  const { title, author, description, date_read, rating, isbn, notes } =
+    req.body;
+  let cover_url = "";
+
+  // Check if an image was uploaded
+  if (req.file) {
+    // Use the uploaded image's file path
+    cover_url = `/images/${req.file.filename}`;
+  } else {
+    // If no image was uploaded, fetch the cover using the ISBN
+    try {
+      cover_url = await getBookCover(isbn);
+    } catch (error) {
+      console.error("Error fetching book cover:", error);
+      // Optionally, set a default cover URL in case of an error
+      cover_url = "/images/default_cover.jpg";
+    }
+  }
+
+  try {
+    await db.query(
+      "INSERT INTO books (title, author, description, date_read, rating, isbn, notes, cover_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+      [title, author, description, date_read, rating, isbn, notes, cover_url]
+    );
+    res.redirect("/");
+  } catch (err) {
+    console.error("Database query error: ", err);
+    res.status(500).send("Error adding the book");
+  }
 });
 
 app.listen(port, () => {
