@@ -1,3 +1,37 @@
-h1 {
-  color: blue;
+.nav-pills .nav-link {
+  color: black !important; /* Change header text color to black */
+}
+
+.nav-pills .nav-link.active {
+  background-color: black !important; /* Change active tab background to black */
+  color: white !important; /* Ensure text remains visible */
+}
+
+.container {
+  text-align: center;
+}
+
+.book {
+  overflow: hidden; /* Clearfix to contain floated elements */
+  margin-bottom: 20px; /* Add some space below each book */
+}
+
+.book-img {
+  float: left; /* Float the image to the left */
+  width: 125px;
+  height: 187;
+  margin-right: 20px; /* Space between the image and text */
+  margin-bottom: 10px; /* Space below the image */
+}
+
+.book h2 {
+  margin-top: 0; /* Remove extra margin from the top of the text */
+}
+
+.books {
+  text-align: left; /* Align text to the left for better readability */
+}
+
+.books h2 {
+  text-align: center;
 }

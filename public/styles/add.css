@@ -1,0 +1,8 @@
+.nav-pills .nav-link {
+  color: black !important; /* Change header text color to black */
+}
+
+.nav-pills .nav-link.active {
+  background-color: black !important; /* Change active tab background to black */
+  color: white !important; /* Ensure text remains visible */
+}
