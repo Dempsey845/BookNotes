@@ -114,6 +114,66 @@ app.post("/add", upload.single("image"), async (req, res) => {
   }
 });
 
+app.get("/edit/:id", async (req, res) => {
+  const bookId = req.params.id;
+
+  try {
+    const result = await db.query("SELECT * FROM books WHERE id = $1", [
+      bookId,
+    ]);
+
+    if (result.rows.length > 0) {
+      res.render("edit.ejs", { book: result.rows[0] });
+    } else {
+      res.status(404).send("Book not found");
+    }
+  } catch (err) {
+    console.error("Database query error: ", err);
+    res.status(500).send("Error retrieving book details");
+  }
+});
+
+app.post("/edit/:id", upload.single("image"), async (req, res) => {
+  const bookId = req.params.id; // Get book ID from URL
+  const {
+    title,
+    author,
+    description,
+    date_read,
+    rating,
+    isbn,
+    notes,
+    cover_url,
+  } = req.body;
+  const image = req.file;
+
+  const cover_url_to_use = image
+    ? `/images/${image.filename}`
+    : cover_url || "";
+
+  try {
+    await db.query(
+      "UPDATE books SET title = $1, author = $2, description = $3, date_read = $4, rating = $5, isbn = $6, notes = $7, cover_url = $8 WHERE id = $9",
+      [
+        title,
+        author,
+        description,
+        date_read,
+        rating,
+        isbn,
+        notes,
+        cover_url_to_use,
+        bookId,
+      ]
+    );
+
+    res.redirect(`/book/${bookId}`); // Redirect to updated book page
+  } catch (err) {
+    console.error("Database query error: ", err);
+    res.status(500).send("Error updating the book");
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
